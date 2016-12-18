@@ -29,4 +29,4 @@ rm -f $filename
 write_mysql "Disk Usage" "$(df --output=source,pcent,ipcent,target|grep -v -E '% /dev|% /proc|% /sys'|awk '{	p=int(substr($2,1,length($2)-1));	i=int(substr($3,1,length($3)-1)); if(i>p) p=i; if( p>=90) print "<span class=\"crit\">"$0"</span>"; else if(p>=80) print "<span class=\"warn\">"$0"</span>"; else print $0;}')";
 write_mysql "Disk Load" "$(iostat -d | awk 'NR > 2 {print $0}')";
 write_mysql "Network Load" "$(cat /proc/net/dev |awk ' NR > 2 {print $0}'| awk ' BEGIN {printf("%15s %15s %15s %15s %15s \n","inteface","bytes_recived","packet_recived","bytes_transmit","packet_transmit")} {printf("%15s %15d %15d %15d %15d \n",$1,$2,$3,$10,$11)}')";
-
+write_mysql "dffdded" "$(mpstat | awk 'NR >3{gsub(",",".",$0);printf("%8.1f %%us %8.1f %%sys %8.1f %%idle %8.1f %%iowait \n", $3+$4,$5,$12,$6)}')";
