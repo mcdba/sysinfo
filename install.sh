@@ -60,3 +60,5 @@ sudo ./addsudousers.sh $USER
 
 # for gawk
 sudo apt-get -y install gawk 
+# for vnstat
+sudo apt-get -y install vnstat
