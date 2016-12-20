@@ -7,9 +7,9 @@ DATE=$(date +%Y-%m-%d:%H:%M:%S);
 filename=$PWD/tst$DATE.pcap
 
 filename_vnstat=$PWD/$DATE.vnstat
-vnstat -tr 60 > $filename_vnstat & 
+#vnstat -tr 60 > $filename_vnstat & 
 
-sudo tcpdump  -G 60 -W 1 -w $filename
+#sudo tcpdump  -G 60 -W 1 -w $filename
 
 # write into log return log id
 log_id=$(mysql --user=$DB_USER --password=$DB_PASSWD $DB_NAME -B -N -e "INSERT INTO log () VALUES (); select LAST_INSERT_ID();";);
@@ -21,7 +21,7 @@ function write_mysql()
 }
 
 
-write_mysql "CPU Load Average" "$(uptime | awk '{print substr($10,1,length($10)-1)}')";
+write_mysql "Load Average  ( Cpu(s)=$(nproc))" "$(php -f la.php $((uptime; nproc)| cat | tr "\n" " "| awk '{gsub(","," ",$0);print $(NF-6)"."$(NF-5)" "$(NF-4)"."$(NF-3)" "$(NF-2)"."$(NF-1)" "$NF}'))";
 
 write_mysql "Network Load (vnstat)" "$(cat $filename_vnstat)";
 rm -f $filename_vnstat
