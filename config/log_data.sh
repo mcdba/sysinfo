@@ -23,7 +23,7 @@ function write_mysql()
 
 write_mysql "Load Average  ( Cpu(s)=$(nproc))" "$(php -f la.php $((uptime; nproc)| cat | tr "\n" " "| awk '{gsub(","," ",$0);print $(NF-6)"."$(NF-5)" "$(NF-4)"."$(NF-3)" "$(NF-2)"."$(NF-1)" "$NF}'))";
 
-write_mysql "Network Load (vnstat)" "$(cat $filename_vnstat|awk'NR>1{print $0}')";
+write_mysql "Network Load (vnstat)" "$(cat $filename_vnstat|awk ' NR > 1 {print $0}')";
 rm -f $filename_vnstat
 
 write_mysql "tcpdump Top Talkers src/dst ip, port, pps" "$(sudo tcpdump -nn -r my.pcap tcp or udp and not ip6 | awk '{gsub(/\./," ",$3);gsub(/\./," ",$5);print $3" " $5}' |awk '{print $1"."$2"."$3"."$4"  "$6"."$7"."$8"."$9"  "$5}'|gawk '{a[$1" "$2" "$3]+=1; s+=1} END {PROCINFO["sorted_in"] = "@val_num_desc";for(sip_dip_p in a) printf( "%45s %5d %8.2f \n",sip_dip_p,a[sip_dip_p],a[sip_dip_p]/60) }'| awk '{printf("%17s %17s %8s %5d %8.2f\n",$1,$2,$3, $4, $5)}')";
