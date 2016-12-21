@@ -7,7 +7,9 @@ DATE=$(date +%Y-%m-%d:%H:%M:%S);
 filename=$PWD/tst$DATE.pcap
 
 filename_vnstat=$PWD/$DATE.vnstat
-vnstat -tr 60 > $filename_vnstat & 
+INT="$(ls -1 /sys/class/net|awk 'NR<2 {print $0}')";
+vnstat -i $INT -tr 60  > $filename_vnstat &
+#vnstat -tr 60 -i $interface > $filename_vnstat & 
 
 sudo tcpdump  -G 60 -W 1 -w $filename
 
